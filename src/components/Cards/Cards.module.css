@@ -11,6 +11,7 @@
   flex-direction: row;
   gap: 10px;
   flex-wrap: wrap;
+  margin-bottom: 30px;
 }
 
 .modalContainer {
@@ -69,4 +70,30 @@
   line-height: 32px;
 
   margin-bottom: -12px;
+}
+
+.containerGame {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+.title {
+  display: flex;
+  gap: 5px;
+  font-size: 20px;
+  color: #7ac100;
+}
+.buttonBack {
+  width: 70px;
+  height: 30px;
+  border-radius: 8px;
+  background: #7ac100;
+  color: #fff;
+  text-align: center;
+  font-variant-numeric: lining-nums proportional-nums;
+  font-family: StratosSkyeng;
+  font-size: 12px;
+  border: none;
+  cursor: pointer;
 }

@@ -1,0 +1,14 @@
+.animationCount {
+    animation: animation 1.0s;
+  }
+  
+  @keyframes animation {
+    from {
+      transform: scale(0.5);
+    }
+    30% {
+      transform: scale(2);
+    }
+
+  }
+  

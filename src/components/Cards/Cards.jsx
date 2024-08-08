@@ -1,10 +1,14 @@
 import { shuffle } from "lodash";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { generateDeck } from "../../utils/cards";
 import styles from "./Cards.module.css";
 import { EndGameModal } from "../../components/EndGameModal/EndGameModal";
 import { Button } from "../../components/Button/Button";
 import { Card } from "../../components/Card/Card";
+import { EasyModeContext } from "../../context/context";
+import { Animation } from "../Animation/Animation";
+import { Link } from "react-router-dom";
+import { SelectLevelPage } from "../../pages/SelectLevelPage/SelectLevelPage";
 
 // Игра закончилась
 const STATUS_LOST = "STATUS_LOST";
@@ -41,6 +45,8 @@ function getTimerValue(startDate, endDate) {
  * previewSeconds - сколько секунд пользователь будет видеть все карты открытыми до начала игры
  */
 export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
+  let [attempts, setAttempts] = useState(3);
+  const { easy } = useContext(EasyModeContext);
   // В cards лежит игровое поле - массив карт и их состояние открыта\закрыта
   const [cards, setCards] = useState([]);
   // Текущий статус игры
@@ -124,6 +130,26 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
     });
 
     const playerLost = openCardsWithoutPair.length >= 2;
+    if (easy && playerLost) {
+      setAttempts(attempts - 1);
+      if (
+        openCards.filter(card => {
+          openCards.filter(openCard => card.suit === openCard.suit && card.rank === openCard.rank);
+        })
+      ) {
+          openCardsWithoutPair.map(card => {
+            setTimeout(() => {
+            return (card.open = false);
+        }, 700);
+        });
+      }
+      if (attempts === 1) {
+       setTimeout(() => {
+        finishGame(STATUS_LOST);
+       }, 500); 
+      }
+      return;
+    }
 
     // "Игрок проиграл", т.к на поле есть две открытые карты без пары
     if (playerLost) {
@@ -195,7 +221,18 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
             </>
           )}
         </div>
+        <div className={styles.containerGame}>
         {status === STATUS_IN_PROGRESS ? <Button onClick={resetGame}>Начать заново</Button> : null}
+          {easy ? (
+            <span className={styles.title}>
+              Осталось попыток:
+              <Animation params={attempts} />
+            </span>
+          ) : null}
+        </div>
+        <Link to={"/"} element={<SelectLevelPage />}>
+          <button className={styles.buttonBack}>Назад</button>
+        </Link>
       </div>
 
       <div className={styles.cards}>
