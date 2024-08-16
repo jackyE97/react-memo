@@ -97,3 +97,12 @@
   border: none;
   cursor: pointer;
 }
+
+.count {
+  color: #7ac100;
+  font-variant-numeric: lining-nums proportional-nums;
+  font-family: StratosSkyeng;
+  font-size: 16px;
+  font-style: normal;
+  margin-right: 10px;
+}

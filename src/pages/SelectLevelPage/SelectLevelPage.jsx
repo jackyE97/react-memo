@@ -1,13 +1,25 @@
 import { Link } from "react-router-dom";
 import styles from "./SelectLevelPage.module.css";
-import { useContext } from "react";
-import { EasyModeContext } from "../../context/context";
+import { useEasyMode } from "../../context/hooks/useEasyMode";
+import { getLeaders } from "../../api";
+import { useLeaders } from "../../context/hooks/useLeaders";
+import { useEffect } from "react";
 
 export function SelectLevelPage() {
-  const { easy, setEasy } = useContext(EasyModeContext);
+  const { setLeaders } = useLeaders();
+  const { easyModeSelect } = useEasyMode();
+  useEffect(() => {
+    getLeaders().then(response => {
+      setLeaders(response.leaders);
+    });
+  }, [setLeaders]);
   return (
     <div className={styles.container}>
       <div className={styles.modal}>
+      <div className={styles.checkBox}>
+          <input type="checkbox" onClick={easyModeSelect} />
+          <label className={styles.label}>Легкий режим</label>
+        </div>
         <h1 className={styles.title}>Выбери сложность</h1>
         <ul className={styles.levels}>
           <li className={styles.level}>
@@ -26,9 +38,10 @@ export function SelectLevelPage() {
             </Link>
           </li>
         </ul>
-        <div className={styles.easyMode}>
-          <span>Облегченный режим</span>
-          <input className={styles.in} type="checkbox" onChange={() => setEasy(!easy)} />
+        <div>
+          <Link to="/leaderboard">
+          <p className={styles.linkToLeaderBoard}>Перейти к лидерборду</p>
+          </Link>
         </div>
       </div>
     </div>

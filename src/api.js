@@ -1,21 +1,26 @@
-// export const getList = async () => {
-//     const res = await fetch("https://wedev-api.sky.pro/api/leaderboard", {
-//       method: "GET",
-//     });
-//     const data = await res.json();
-//     return data;
-//   };
-  
-//   export const postList = async ({id, name, time}) => {
-//     const res = await fetch("https://wedev-api.sky.pro/api/leaderboard", {
-//       method: "POST",
-//       body: JSON.stringify({
-//         id,
-//         name,
-//         time,
-//       })
-//     });
-//     const data = await res.json();
-//     return data;
-//   };
-  
+const host = "https://wedev-api.sky.pro/api/leaderboard";
+
+//Получаем список лидеров
+export async function getLeaders() {
+  const response = await fetch(host);
+  if (!response.status === 200) {
+    throw new Error("Ошибка");
+  }
+  const data = await response.json();
+  return data;
+}
+//Добавляем лидера в список
+export async function postLeaders({ name, time }) {
+  const response = await fetch(host, {
+    method: "POST",
+    body: JSON.stringify({
+      name: name,
+      time: time,
+    }),
+  });
+  if (response.status === 400) {
+    throw new Error("Полученные данные не в формате JSON");
+  }
+  const data = await response.json();
+  return data;
+}
