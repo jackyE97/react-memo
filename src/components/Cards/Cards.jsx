@@ -5,6 +5,9 @@ import styles from "./Cards.module.css";
 import { EndGameModal } from "../../components/EndGameModal/EndGameModal";
 import { Button } from "../../components/Button/Button";
 import { Card } from "../../components/Card/Card";
+import { Link } from "react-router-dom";
+import { SelectLevelPage } from "../../pages/SelectLevelPage/SelectLevelPage";
+import { useEasyMode } from "../../context/hooks/useEasyMode";
 
 // Игра закончилась
 const STATUS_LOST = "STATUS_LOST";
@@ -41,6 +44,8 @@ function getTimerValue(startDate, endDate) {
  * previewSeconds - сколько секунд пользователь будет видеть все карты открытыми до начала игры
  */
 export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
+  const { easyMode } = useEasyMode();
+  const [countTry, setCountTry] = useState(null);
   // В cards лежит игровое поле - массив карт и их состояние открыта\закрыта
   const [cards, setCards] = useState([]);
   // Текущий статус игры
@@ -63,6 +68,7 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
   }
   function startGame() {
     const startDate = new Date();
+    setCountTry(easyMode ? 3 : 1);
     setGameEndDate(null);
     setGameStartDate(startDate);
     setTimer(getTimerValue(startDate, null));
@@ -123,7 +129,15 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
       return false;
     });
 
-    const playerLost = openCardsWithoutPair.length >= 2;
+    if (openCardsWithoutPair.length >= 2) {
+      setTimeout(() => {
+        openCardsWithoutPair[1].open = false;
+        openCardsWithoutPair[0].open = false;
+      }, 1000);
+      setCountTry(countTry - 1);
+
+      const playerLost = countTry === 1;
+  
 
     // "Игрок проиграл", т.к на поле есть две открытые карты без пары
     if (playerLost) {
@@ -132,6 +146,7 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
     }
 
     // ... игра продолжается
+  }
   };
 
   const isGameEnded = status === STATUS_LOST || status === STATUS_WON;
@@ -183,6 +198,7 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
             </div>
           ) : (
             <>
+             <div className={styles.count}>{easyMode && `Осталось попыток: ${countTry}`}</div>
               <div className={styles.timerValue}>
                 <div className={styles.timerDescription}>min</div>
                 <div>{timer.minutes.toString().padStart("2", "0")}</div>
@@ -195,7 +211,9 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
             </>
           )}
         </div>
+        <div>
         {status === STATUS_IN_PROGRESS ? <Button onClick={resetGame}>Начать заново</Button> : null}
+        </div>
       </div>
 
       <div className={styles.cards}>
@@ -220,6 +238,9 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
           />
         </div>
       ) : null}
+       <Link to={"/"} element={<SelectLevelPage />}>
+          <button className={styles.buttonBack}>Назад</button>
+        </Link>
     </div>
   );
 }
