@@ -16,10 +16,6 @@ export function SelectLevelPage() {
   return (
     <div className={styles.container}>
       <div className={styles.modal}>
-      <div className={styles.checkBox}>
-          <input type="checkbox" onClick={easyModeSelect} />
-          <label className={styles.label}>Легкий режим</label>
-        </div>
         <h1 className={styles.title}>Выбери сложность</h1>
         <ul className={styles.levels}>
           <li className={styles.level}>
@@ -38,6 +34,10 @@ export function SelectLevelPage() {
             </Link>
           </li>
         </ul>
+        <div className={styles.checkBox}>
+          <input type="checkbox" onClick={easyModeSelect} />
+          <label className={styles.label}>Легкий режим</label>
+        </div>
         <div>
           <Link to="/leaderboard">
           <p className={styles.linkToLeaderBoard}>Перейти к лидерборду</p>
